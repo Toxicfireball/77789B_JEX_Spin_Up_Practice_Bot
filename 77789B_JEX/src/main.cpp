@@ -142,6 +142,20 @@ void chasis_move(float Lspeed, float Rspeed){
    
 }
 
+
+void pure_chasis_move(float Lspeed, float Rspeed){
+
+  frontleft.spin(forward,Lspeed,vex::voltageUnits::volt);
+  midleft.spin(forward,Lspeed,vex::voltageUnits::volt);
+  backleft.spin(forward,Lspeed ,vex::voltageUnits::volt);
+  frontright.spin(forward,Rspeed,vex::voltageUnits::volt);
+  midright.spin(forward,Rspeed,vex::voltageUnits::volt);
+  backright.spin(forward,Rspeed,vex::voltageUnits::volt);
+
+  
+
+   
+}
 void base_left(float speed){
   frontleft.spin(forward,speed*0.6,vex::voltageUnits::volt);
   midleft.spin(forward,speed*0.6,vex::voltageUnits::volt);
@@ -241,95 +255,19 @@ void advfwd(float target, float speed, float slowspeed, float slowzone){
 
 
 void cata_run(float spd_pct){
-  float speed_change_zone = 150.75;
-
-  
-   float rotate_val = cata_rotate.angle(degrees);
-  if(H.ButtonL1.pressing() == 1){
-    timer ti;
-   rotate_val = cata_rotate.angle(degrees);
-  
-   while(rotate_val >= speed_change_zone){
-    frontleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    frontright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-
-    if(H.ButtonR1.pressing()== 1){
-
-      intake.spin(forward, 12, vex::voltageUnits::volt);
-    }
-    else if (H.ButtonR2.pressing() == 1){
-      intake.spin(reverse, 12 ,vex::voltageUnits::volt);
-    }
-    else{
-
-      intake.spin(forward, 0, vex::voltageUnits::volt);
-    }
-     cat_test.spin(reverse,6.15 , vex::voltageUnits::volt);
-   
-
-          if (ti > 450){
-
-          break;
-          }
-     
-    
-      }  
-           cat_test.stop();
-     vex::task::sleep(200);
-      rotate_val = cata_rotate.angle(degrees);
-   while(rotate_val  < speed_change_zone){
-      rotate_val =  cata_rotate.angle(degrees);
-       Brain.Screen.clearLine();
-       Brain.Screen.print(rotate_val);
-
-       vex::task::sleep(40);
-       cat_test.spin(reverse, 12, vex::voltageUnits::volt);
-    frontleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    frontright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-      backright.spin(forward,(H.Axis2.value()/(100/12))*spd_pct,vex::voltageUnits::volt);
-          if(H.ButtonR1.pressing()== 1){
-
-      intake.spin(forward, 12, vex::voltageUnits::volt);
-    }
-    else if (H.ButtonR2.pressing() == 1){
-      intake.spin(reverse, 12 ,vex::voltageUnits::volt);
-    }
-    else{
-
-      intake.spin(forward, 0, vex::voltageUnits::volt);
-    };
-  
-      }
-   
-       cat_test.spin(forward, 0, vex::voltageUnits::volt);
-
-  }
-}
-
-
-void cata_runV(float spd_pct){
   float speed_change_zone = 146.15;
   float rotate_val = cata_rotate.angle(degrees);
+  int Ax3 = (H.Axis3.value()/(127/12))*spd_pct;
+  int Ax2 = (H.Axis2.value()/(127/12))*spd_pct;
   if(H.ButtonL1.pressing() == 1){
   timer ti;
   rotate_val =  cata_rotate.angle(degrees);
    while (rotate_val < speed_change_zone){
- 
-    frontleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    frontright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    intake.spin(reverse,(V.Axis2.value())/(127/12), vex::voltageUnits::volt);     
+       Ax3 = (H.Axis3.value()/(127/12))*spd_pct;
+      Ax2 = (H.Axis2.value()/(127/12))*spd_pct;
+
+    pure_chasis_move(Ax3,Ax2);
+  
     cat_test.spin(reverse,12 , vex::voltageUnits::volt);
     
      if (ti > 450){
@@ -342,16 +280,177 @@ void cata_runV(float spd_pct){
     
       rotate_val =  cata_rotate.angle(degrees);
    while(rotate_val  >= speed_change_zone){
+      Ax3 = (H.Axis3.value()/(127/12))*spd_pct;
+      Ax2 = (H.Axis2.value()/(127/12))*spd_pct;
       rotate_val =  cata_rotate.angle(degrees);
        Brain.Screen.clearLine();
        Brain.Screen.print(rotate_val);
-    frontleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    frontright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
+
+       pure_chasis_move(Ax3,Ax2);
+       cat_test.spin(reverse,12 , vex::voltageUnits::volt);
+           if(H.ButtonB.pressing() == 1){
+
+     Expansion_out.set(true);
+
+
+    }
+    else{
+
+      Expansion_out.set(false);
+    }
+      }
+
+      V.rumble(".");
+   
+       cat_test.stop();
+
+  }
+}
+
+
+void dog_cata_run(float spd_pct){
+  float speed_change_zone = 146.15;
+  float rotate_val = cata_rotate.angle(degrees);
+    float Ch3 = H.Axis3.value() * spd_pct;
+
+    float Ch1 = H.Axis1.value()* spd_pct;
+  if(H.ButtonL1.pressing() == 1){
+  timer ti;
+  rotate_val =  cata_rotate.angle(degrees);
+   while (rotate_val < speed_change_zone){
+    Ch3 = H.Axis3.value() * spd_pct;
+
+    Ch1 = H.Axis1.value()* spd_pct;
+      if(H.ButtonR1.pressing()== 1){
+
+      intake.spin(forward, 12, vex::voltageUnits::volt);
+    }
+    else if (H.ButtonR2.pressing() == 1){
+      intake.spin(reverse, 12 ,vex::voltageUnits::volt);
+    }
+    else{
+      intake.stop();
+    }
+ 
+
+    if(fabs(Ch3) > 10 ){
+      chasis_move(Ch3 , Ch3 );
+    }else if(fabs(Ch1) > 15){
+       chasis_move(Ch1 * 0.5, -Ch1 *0.5);
+    }else {
+      move_base(0);
+    }
+  
+    cat_test.spin(reverse,12 , vex::voltageUnits::volt);
+    
+     if (ti > 450){
+
+       break;
+     }
+     
+      }  
+      cat_test.stop();
+    
+      rotate_val =  cata_rotate.angle(degrees);
+   while(rotate_val  >= speed_change_zone){
+         Ch3 = H.Axis3.value() * spd_pct;
+
+    Ch1 = H.Axis1.value()* spd_pct;
+      rotate_val =  cata_rotate.angle(degrees);
+       Brain.Screen.clearLine();
+       Brain.Screen.print(rotate_val);
+  
+    if(fabs(Ch3) > 10 ){
+      chasis_move(Ch3 , Ch3);
+    }else if(fabs(Ch1) > 15){
+       chasis_move(Ch1 * 0.5, -Ch1 *0.5);
+    }else {
+      move_base(0);
+    }
+             if(H.ButtonR1.pressing()== 1){
+
+      intake.spin(forward, 12, vex::voltageUnits::volt);
+    }
+    else if (H.ButtonR2.pressing() == 1){
+      intake.spin(reverse, 12 ,vex::voltageUnits::volt);
+    }
+    else{
+      intake.stop();
+    }
        intake.spin(reverse,(V.Axis2.value())/(127/12), vex::voltageUnits::volt);  
+       cat_test.spin(reverse,12 , vex::voltageUnits::volt);
+           if(H.ButtonB.pressing() == 1){
+
+     Expansion_out.set(true);
+
+
+    }
+    else{
+
+      Expansion_out.set(false);
+    }
+      }
+
+      V.rumble(".");
+   
+       cat_test.stop();
+
+  }
+}
+
+void cata_runV(float spd_pct){
+  float speed_change_zone = 146.15;
+  float rotate_val = cata_rotate.angle(degrees);
+  int Ax3 = (H.Axis3.value()/(127/12))*spd_pct;
+  int Ax2 = (H.Axis2.value()/(127/12))*spd_pct;
+  if(H.ButtonL1.pressing() == 1){
+  timer ti;
+  rotate_val =  cata_rotate.angle(degrees);
+   while (rotate_val < speed_change_zone){
+           Ax3 = (H.Axis3.value()/(127/12))*spd_pct;
+      Ax2 = (H.Axis2.value()/(127/12))*spd_pct;
+     pure_chasis_move(Ax3,Ax2);
+
+
+
+        if(H.ButtonR1.pressing()== 1){
+
+      intake.spin(forward, 12, vex::voltageUnits::volt);
+    }
+    else if (H.ButtonR2.pressing() == 1){
+      intake.spin(reverse, 12 ,vex::voltageUnits::volt);
+    }
+    else{
+      intake.stop();
+    }
+    cat_test.spin(reverse,12 , vex::voltageUnits::volt);
+    
+     if (ti > 450){
+
+       break;
+     }
+     
+      }  
+      cat_test.stop();
+    
+      rotate_val =  cata_rotate.angle(degrees);
+   while(rotate_val  >= speed_change_zone){
+           Ax3 = (H.Axis3.value()/(127/12))*spd_pct;
+      Ax2 = (H.Axis2.value()/(127/12))*spd_pct;
+      rotate_val =  cata_rotate.angle(degrees);
+       Brain.Screen.clearLine();
+       Brain.Screen.print(rotate_val);
+      pure_chasis_move(Ax3,Ax2);
+     if(H.ButtonR1.pressing()== 1){
+
+      intake.spin(forward, 12, vex::voltageUnits::volt);
+    }
+    else if (H.ButtonR2.pressing() == 1){
+      intake.spin(reverse, 12 ,vex::voltageUnits::volt);
+    }
+    else{
+      intake.stop();
+    }
        cat_test.spin(reverse,12 , vex::voltageUnits::volt);
            if(H.ButtonB.pressing() == 1){
 
@@ -387,33 +486,19 @@ void solo_driver_control(float spd_pct){
 
     H.Screen.clearLine();
     H.Screen.setCursor(3, 1);
+    
 
-  
-     
+    
+    H.Screen.print("Base Temp %f",(frontleft.temperature(vex::percentUnits::pct)+midleft.temperature(vex::percentUnits::pct)+midright.temperature(vex::percentUnits::pct)+frontright.temperature(vex::percentUnits::pct))/4);
+
     cata_run(spd_pct);
+    
+    
+   
 
-    frontleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    frontright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    if(H.ButtonB.pressing() == 1){
-      DigitalOutA.set(true);
-
-
-    }
-    else{
-      DigitalOutA.set(false);
-    }
-    if(H.ButtonA.pressing()==1){
-
-     DigitalOutB.set(true);
-
-    }
-    else{
-      DigitalOutB.set(false);
-    }
+    int Ax3 = (H.Axis3.value()/(127/12))*spd_pct;
+    int Ax2 = (H.Axis2.value()/(127/12))*spd_pct;
+    pure_chasis_move(Ax3,Ax2);
     if(H.ButtonR1.pressing()== 1){
 
       intake.spin(forward, 12, vex::voltageUnits::volt);
@@ -422,17 +507,44 @@ void solo_driver_control(float spd_pct){
       intake.spin(reverse, 12 ,vex::voltageUnits::volt);
     }
     else{
+      intake.stop();
+    }
+    
 
-      intake.spin(forward, 0, vex::voltageUnits::volt);
+    if(H.ButtonB.pressing() == 1){
+
+     Expansion_out.set(true);
+
+
+    }
+    else{
+
+      Expansion_out.set(false);
     }
 
-    
+    if(H.ButtonA.pressing()==1){
+
+
+          DigitalOutB.set(true);
+
+
+    }
+    else{
+      DigitalOutB.set(false);
+    }
+    if(H.ButtonX.pressing() == 1){
+
+     DigitalOutE.set(true);
+     DigitalOutF.set(false);
+    }
+    else{
+     DigitalOutE.set(false);
+     DigitalOutF.set(false);
+    }
     if(H.ButtonY.pressing() == 1 ){
      cat_test.spin(reverse, 12 , vex::voltageUnits::volt);
-     vex::task::sleep(40);
+     vex::task::sleep(65);
      cat_test.spin(reverse , 0 , vex::voltageUnits::volt);
-
-
 
     }
 
@@ -442,8 +554,6 @@ void solo_driver_control(float spd_pct){
     }
 
   }
-
-
 
 
 
@@ -4113,12 +4223,11 @@ void driver_control(float spd_pct){
       DigitalOutC.set(false);
       DigitalOutD.set(false);
     }
-    frontleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backleft.spin(forward,(H.Axis3.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    frontright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    midright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
-    backright.spin(forward,(H.Axis2.value()/(127/12))*spd_pct,vex::voltageUnits::volt);
+    int Ax3 = (H.Axis3.value()/(127/12))*spd_pct;
+    int Ax2 = (H.Axis2.value()/(127/12))*spd_pct;
+    pure_chasis_move(Ax3,Ax2);
+
+
     intake.spin(reverse, V.Axis2.value()/(127/12), vex::voltageUnits::volt);  
 
     if(H.ButtonB.pressing() == 1){
@@ -4164,6 +4273,104 @@ void driver_control(float spd_pct){
     }
 
   }
+
+
+  void dogshit_driver_control(float spd_pct){
+
+    H.Screen.clearLine();
+    H.Screen.setCursor(3, 1);
+
+    
+
+    
+    H.Screen.print("Base Temp %f",(frontleft.temperature(vex::percentUnits::pct)+midleft.temperature(vex::percentUnits::pct)+midright.temperature(vex::percentUnits::pct)+frontright.temperature(vex::percentUnits::pct))/4);
+
+    float Ch3 = H.Axis3.value() * spd_pct;
+
+    float Ch1 = H.Axis1.value()* spd_pct;
+    if(fabs(Ch3) > 10){
+      pure_chasis_move(Ch3 , Ch3 );
+    }else if(fabs(Ch1) > 15){
+       pure_chasis_move(Ch1 * 0.25, -Ch1 *0.25);
+    }else {
+      move_base(0);
+    }
+
+    dog_cata_run(spd_pct);
+    
+    
+   
+   if(H.ButtonX.pressing()==1){
+
+     boosted_shoot(12,25);
+     
+   }
+     else{
+      DigitalOutA.set(false);
+      DigitalOutB.set(false);
+      DigitalOutC.set(false);
+      DigitalOutD.set(false);
+    }
+
+
+    if(H.ButtonR1.pressing()== 1){
+
+      intake.spin(forward, 12, vex::voltageUnits::volt);
+    }
+    else if (H.ButtonR2.pressing() == 1){
+      intake.spin(reverse, 12 ,vex::voltageUnits::volt);
+    }
+    else{
+      intake.stop();
+    }
+    
+   
+
+    if(H.ButtonB.pressing() == 1){
+
+     Expansion_out.set(true);
+
+
+    }
+    else{
+
+      Expansion_out.set(false);
+    }
+
+    if(H.ButtonA.pressing()==1){
+
+
+          DigitalOutB.set(true);
+
+
+    }
+    else{
+      DigitalOutB.set(false);
+    }
+    if(H.ButtonX.pressing() == 1){
+
+     DigitalOutE.set(true);
+     DigitalOutF.set(false);
+    }
+    else{
+     DigitalOutE.set(false);
+     DigitalOutF.set(false);
+    }
+    if(H.ButtonY.pressing() == 1 ){
+     cat_test.spin(reverse, 12 , vex::voltageUnits::volt);
+     vex::task::sleep(65);
+     cat_test.spin(reverse , 0 , vex::voltageUnits::volt);
+
+    }
+
+    else{
+     cat_test.spin(forward,0,vex::voltageUnits::volt);
+
+    }
+
+  }
+
+
   void autonredmk1(){
     DigitalOutE.set(false);
     DigitalOutF.set(false);
@@ -4404,7 +4611,7 @@ void usercontrol(void) {
     // Insert user code here. This is where you use the joystick values to
     // update your motors, etc.
     // ........................................................................
-    driver_control(1);
+    solo_driver_control(1);
 
     
   }
