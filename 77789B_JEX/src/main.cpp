@@ -4586,7 +4586,7 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   autonredmk1();
-
+  Brain.Screen.print("autonredmk1");
   
 }
 
