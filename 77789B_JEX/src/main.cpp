@@ -1807,6 +1807,8 @@ void adv_PID_base_fwdMk1( float target, int max_speed){
    float speed;
    double joint_left;
    double joint_right;
+   bool reached = false;
+   double Nerror;
 
 
 
@@ -1829,9 +1831,12 @@ void adv_PID_base_fwdMk1( float target, int max_speed){
    
  
    error = target - joint_sensor;
+   if (error == 0){
+     reached = true;
+   }
    
    
-   while (error > 0 ){
+   while (reached == false ){
      correctional_spd = speed;
      Brain.Screen.clearScreen();
      Brain.Screen.setCursor(1, 1); 
@@ -1930,6 +1935,10 @@ void adv_PID_base_fwdMk1( float target, int max_speed){
           move_base(speed);
           Brain.Screen.setCursor(12,1);
           Brain.Screen.print("Here1");  
+     }
+     Nerror = target - joint_sensor;
+     if (Nerror == 0){
+       reached = true;
      }
      vex::task::sleep(20);
      
@@ -2524,6 +2533,7 @@ void PID_movement_W_heading(double target, float max_speed, float selected_headi
    double Kp =  2.5;
    double Ki  = 0.01;
    double Kd = 2.1;
+   double Nerror;
    double error;
    double integral;
    double derivative;
@@ -2562,8 +2572,14 @@ void PID_movement_W_heading(double target, float max_speed, float selected_headi
  
    error = target - joint_sensor;
    
+   bool reached = false;
+   if (error == 0 ){
+     reached = true;
+   }
    
-   while (error > 0 ){
+   timer end;
+   int maxtime = target*10*max_speed;
+   while (reached == false || end < maxtime ){
      correctional_spd = speed;
      Brain.Screen.clearScreen();
      Brain.Screen.setCursor(1, 1); 
@@ -2662,6 +2678,13 @@ void PID_movement_W_heading(double target, float max_speed, float selected_headi
           Brain.Screen.setCursor(12,1);
           Brain.Screen.print("Here1");  
      }
+     
+     
+     Nerror = target - joint_sensor;
+     if(error == 0){
+       reached = true;
+     }
+
      vex::task::sleep(10);
      
    }
@@ -2671,6 +2694,7 @@ void PID_movement_W_heading(double target, float max_speed, float selected_headi
      
      robot_heading = inertial_sensor.heading(degrees);
      if(selected_heading != robot_heading){
+       
 
 
             if(selected_heading > robot_heading){
@@ -4586,7 +4610,7 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
   autonredmk1();
-  Brain.Screen.print("autonredmk1");
+
   
 }
 
