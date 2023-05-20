@@ -1785,7 +1785,7 @@ void adv_PID_base_rev(float target, int max_speed)
 
 
 }
-
+//Use this
 void adv_PID_base_fwdMk1( float target, int max_speed){
    Brain.Screen.clearLine();
    double allowance = 0.01;
@@ -1873,13 +1873,15 @@ void adv_PID_base_fwdMk1( float target, int max_speed){
 
 
      }
+     //Calculate derivative
      derivative =error - previous_error;
+     
      
      previous_error = error;
     joint_left =  ((inch_to_rev(midleft.rotation(rev)) + inch_to_rev(frontleft.rotation(rev) + inch_to_rev(backleft.rotation(rev))))/3) - Cjoint_left;
     joint_right = ((inch_to_rev(midright.rotation(rev)) + inch_to_rev(frontright.rotation(rev)) + inch_to_rev(backright.rotation(rev)))/3) - Cjoint_right;
      joint_sensor = (joint_right + joint_left)/2;
-
+     //Update Error
      error =  target - joint_sensor;
      integral = integral + error;
      
@@ -1888,17 +1890,21 @@ void adv_PID_base_fwdMk1( float target, int max_speed){
      if (speed >= max_speed){
        speed = max_speed;
      }
+     //Temporary bugfix were bot will get stucked moving too slowly. Can remove if no longer needed.
      else if(speed < 1.5 && speed > 0){
        speed = 1.5;
 
      }
     
-     
+     //Allowance to allow some level of "wrongness" so it dosen't try and auto correct everything
+     //Checks if right side if faster or left side is faster
      if(joint_right > joint_left + allowance){
+       //PID logic here
           prev_turn_error = correctional_error;
           correctional_error =  joint_right - joint_left;
           turn_derivative = correctional_error - prev_turn_error;
           turn_integral = turn_integral + correctional_error;
+       //Speed calculations to slow down proportionally. Can be improved
           correctional_spd = speed * (1 -(0.01 *(decrease_spd_correction_constant *  correctional_error + (turn_derivative * Tkd) + (Tki * turn_integral))));   
           if(correctional_spd < 0){
             correctional_spd = speed * 0.8;
@@ -1926,6 +1932,7 @@ void adv_PID_base_fwdMk1( float target, int max_speed){
       
      }
      else if(joint_left < joint_right + allowance && joint_right < joint_left + allowance ){
+       //If both sides + allowance is equal.
           move_base(speed);
           Brain.Screen.setCursor(12,1);
           Brain.Screen.print("Fwd");
@@ -2527,6 +2534,7 @@ void PID_turn(float selected_heading, float heading_speed){
 }
 
 void PID_movement_W_heading(double target, float max_speed, float selected_heading, float heading_speed){
+  //Moves to target then turns to angle 
   
    Brain.Screen.clearLine();
    double allowance = 0.35;
@@ -2691,12 +2699,13 @@ void PID_movement_W_heading(double target, float max_speed, float selected_headi
    move_base(0);
    vex::task::sleep(30);
      int ange2 = 0;
-     
+     //Final turning part
      robot_heading = inertial_sensor.heading(degrees);
+
      if(selected_heading != robot_heading){
        
 
-
+  //Calculations to see if right or left is faster relative to it's angle atm         
             if(selected_heading > robot_heading){
               ange2 = selected_heading - robot_heading;
               left = false;
@@ -2731,7 +2740,7 @@ void PID_movement_W_heading(double target, float max_speed, float selected_headi
         if (left == true){
                    Tprev_error = ange2;
              
-           
+           //Continous calculations inside while loop to update information
             if(selected_heading > robot_heading){
               ange2 = selected_heading - robot_heading;
               
@@ -2751,6 +2760,7 @@ void PID_movement_W_heading(double target, float max_speed, float selected_headi
            if (ange2 < 0){
                     ange2 =  360 + ange2;
                 }
+          //PID speed calc
                 Fturn_derivative = ange2 - Tprev_error;              
                 Fturn_integral = Fturn_integral + ange2;
                 Tspeed = ftkp*ange2 + ftki*Fturn_integral + ftkd*Fturn_derivative;
